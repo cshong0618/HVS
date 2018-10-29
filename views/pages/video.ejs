@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <link rel="shortcut icon" href="#" />
+        <%- include ../templates/includes.ejs -%>
+        <style>
+            ::cue {
+                text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+                background: rgba(0, 0, 0, 0);
+                color: white;
+                position: fixed;
+                font-size: 1.1em;
+                -webkit-font-smoothing: antialiased;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <video controls autoplay width="1366" height="768px">
+                <source src="<%= filename %>">
+                <track default kind="subtitles" srclang="en" src="<%= trackname %>">
+                
+            </video>
+        </div>
+
+        <script>
+            var video = document.querySelector("video");
+
+            document.onkeyup = (ev) => {
+                console.log(ev);
+
+                switch(ev.key) {
+                    case 'f': {
+                        if(document.webkitIsFullScreen) {
+                            document.webkitExitFullscreen();
+                        } else {
+                            video.webkitRequestFullScreen();
+                        }
+                        break;
+                    }
+                    case ' ': {
+                        if(video.paused) {
+                            video.play();
+                        } else {
+                            video.pause();
+                        }
+                        break;
+                    }
+                    case 'm': {
+                        video.muted = !video.muted;
+                        break;
+                    }
+                }
+            }
+            document.onkeydown = (ev) => {
+                switch(ev.key) {
+                    case 'ArrowRight': {
+                        video.currentTime += 5;
+                        break;
+                    }
+                    case 'ArrowLeft': {
+                        video.currentTime -= 5;
+                        break;
+                    }
+                    case 'ArrowUp': {
+                        try {
+                            video.volume += 0.1;
+                        } catch {}
+                        break;
+                    }
+                    case 'ArrowDown': {
+                        try {
+                            video.volume -= 0.1;
+                        } catch {}
+                        break;
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

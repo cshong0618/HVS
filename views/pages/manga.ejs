@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <%- include ../templates/includes.ejs -%>
+        <style>
+            .valign-wrapper {
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-align-items: center;
+                    -ms-flex-align: center;
+                        align-items: center;
+                }
+
+            div {
+                color: white;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="container ">
+        
+            <div class="row" id="image-row">
+                <div class="col s12">
+                    <img id="mainImage">
+                </div>
+                <div class="col s12 center-align">
+                    Page: <span id="currentPage"></span> / <span id="totalPage"></span>
+                </div>
+            </div>
+            <div class="row">
+                    <div class="input-field col s10 ">
+                        <select id="page">
+                            <% for(var i = 0; i < filelist.length; i++) { 
+                                var selected = (i === 0) ? "selected" : "";
+                            %>
+                                <option value="<%= i %>" <%= selected %>><%= i + 1 %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+        </div>
+
+        <script>
+            var filelist = <%- JSON.stringify(filelist) %>;
+
+            var currentIndex = 0;
+            var div = document.getElementsByClassName("container");
+            var imageDiv = document.getElementById("image-row");
+            var imageFrame = document.getElementById("mainImage");
+            var pageSelect = document.getElementById("page");
+            pageSelect.classList.add("browser-default");
+
+            var totalPageCounter = document.getElementById("totalPage");
+            totalPageCounter.innerText = filelist.length;
+
+            var currentPageCounter = document.getElementById("currentPage");
+            currentPageCounter.innerText = currentIndex + 1;
+
+            //imageFrame.height = window.innerHeight;
+            
+            //imageFrame.src = filelist[0];
+
+
+            var changeImage = (item, list, idx) => {
+                item.src = list[idx];
+
+                window.scrollTo(0,0); 
+                currentPageCounter.innerText = currentIndex + 1;
+                pageSelect.value = idx.toString();
+            }
+
+            var incrementPage = () => {
+                if(currentIndex < filelist.length - 1) {
+                    currentIndex += 1;
+                    changeImage(imageFrame, filelist, currentIndex);
+                }
+            }
+
+            var decrementPage = () => {
+                if(currentIndex > 0) {
+                    currentIndex -= 1;
+                    changeImage(imageFrame, filelist, currentIndex);
+                }
+            }
+
+            pageSelect.onchange = (ev) => {
+                console.log(ev);
+                var selectedValue = parseInt(pageSelect.value);
+                currentIndex = selectedValue;
+                changeImage(imageFrame, filelist, selectedValue);
+            }
+
+            imageFrame.onload = (ev) => {
+                console.log("image loaded data");
+                
+                console.log(imageFrame.width, imageDiv.clientWidth);
+                imageFrame.width = imageDiv.clientWidth;
+            };
+            
+            document.onreadystatechange = (ev) => {
+                console.log("onreadystatechange")
+                changeImage(imageFrame, filelist, currentIndex);
+
+            }
+
+            document.onkeyup = (ev) => {
+                console.log(ev.keyCode);
+
+                // right: 39
+                // left: 37
+                switch(ev.keyCode) {
+                    case 39: {
+                        incrementPage();
+                        break;
+                    }
+                    case 37: {
+                        decrementPage();
+                        break;
+                    }
+                }
+                console.log(currentIndex);
+            };
+
+            imageFrame.onclick = (ev) => {
+                console.log(ev);
+                var clickX = ev.clientX;
+                var clickY = ev.clientY;
+
+                var documentMidpoint = window.innerWidth / 2;
+
+                if (clickX < documentMidpoint) {
+                    decrementPage();
+                } else if (clickX > documentMidpoint) {
+                    incrementPage();
+                }
+            }
+        </script>
+    </body>
+</html>

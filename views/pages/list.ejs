@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <%- include ../templates/includes.ejs -%>
+    </head>
+    
+    <body>
+        <div class="container">
+            <h1>
+                <a href="/">HOME</a>
+            </h1>
+            <table>
+                <% for(var i = 0; i < filelist.length; i++) { %>
+                    <tr>
+                        <td>
+                            <a href="<%= filelist[i] %>"><%= filelist[i] %></a>
+                        </td>
+                    </tr>
+                <% } %>            
+            </table>
+        </div>
+    </body>
+</html>
